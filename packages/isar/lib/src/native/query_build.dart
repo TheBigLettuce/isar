@@ -1009,6 +1009,15 @@ void _buildConditionStringOp({
           ),
         );
         break;
+      case FilterConditionType.equalTo:
+      case FilterConditionType.greaterThan:
+      case FilterConditionType.lessThan:
+      case FilterConditionType.between:
+      case FilterConditionType.isNull:
+      case FilterConditionType.isNotNull:
+      case FilterConditionType.elementIsNull:
+      case FilterConditionType.elementIsNotNull:
+      case FilterConditionType.listLength:
     }
   } else {
     throw IsarError('Unsupported type for condition');

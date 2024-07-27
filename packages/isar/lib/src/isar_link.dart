@@ -67,7 +67,7 @@ abstract class IsarLink<OBJ> implements IsarLinkBase<OBJ> {
 
 /// Establishes a 1:n relationship with the same or another collection. The
 /// target collection is specified by the generic type argument.
-abstract class IsarLinks<OBJ> implements IsarLinkBase<OBJ>, Set<OBJ> {
+abstract mixin class IsarLinks<OBJ> implements IsarLinkBase<OBJ>, Set<OBJ> {
   /// Create an empty, unattached link. Make sure to provide the correct
   /// generic argument.
   factory IsarLinks() => IsarLinksImpl();
