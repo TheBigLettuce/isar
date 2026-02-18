@@ -1,36 +1,36 @@
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element.dart' hide Name;
 import 'package:analyzer/dart/element/type.dart';
 import 'package:dartx/dartx.dart';
 import 'package:isar/isar.dart';
 import 'package:source_gen/source_gen.dart';
 
-const TypeChecker _collectionChecker = TypeChecker.fromRuntime(Collection);
-const TypeChecker _enumeratedChecker = TypeChecker.fromRuntime(Enumerated);
-const TypeChecker _embeddedChecker = TypeChecker.fromRuntime(Embedded);
-const TypeChecker _ignoreChecker = TypeChecker.fromRuntime(Ignore);
-const TypeChecker _nameChecker = TypeChecker.fromRuntime(Name);
-const TypeChecker _indexChecker = TypeChecker.fromRuntime(Index);
-const TypeChecker _backlinkChecker = TypeChecker.fromRuntime(Backlink);
+const TypeChecker _collectionChecker = TypeChecker.typeNamed(Collection);
+const TypeChecker _enumeratedChecker = TypeChecker.typeNamed(Enumerated);
+const TypeChecker _embeddedChecker = TypeChecker.typeNamed(Embedded);
+const TypeChecker _ignoreChecker = TypeChecker.typeNamed(Ignore);
+const TypeChecker _nameChecker = TypeChecker.typeNamed(Name);
+const TypeChecker _indexChecker = TypeChecker.typeNamed(Index);
+const TypeChecker _backlinkChecker = TypeChecker.typeNamed(Backlink);
 
 extension ClassElementX on ClassElement {
   bool get hasZeroArgsConstructor {
     return constructors.any(
-      (ConstructorElement c) =>
-          c.isPublic &&
-          !c.parameters.any((ParameterElement p) => !p.isOptional),
+      (c) => c.isPublic && !c.formalParameters.any((p) => !p.isOptional),
     );
   }
 
   List<PropertyInducingElement> get allAccessors {
     final ignoreFields =
         collectionAnnotation?.ignore ?? embeddedAnnotation!.ignore;
+    // this.;
+
     return [
-      ...accessors.mapNotNull((e) => e.variable2),
+      ...getters.mapNotNull((e) => e.variable),
       if (collectionAnnotation?.inheritance ?? embeddedAnnotation!.inheritance)
         for (InterfaceType supertype in allSupertypes) ...[
           if (!supertype.isDartCoreObject)
-            ...supertype.accessors.mapNotNull((e) => e.variable2)
+            ...supertype.getters.mapNotNull((e) => e.variable)
         ]
     ]
         .where(
@@ -45,7 +45,7 @@ extension ClassElementX on ClassElement {
   }
 
   List<String> get enumConsts {
-    return fields.where((e) => e.isEnumConstant).map((e) => e.name).toList();
+    return fields.where((e) => e.isEnumConstant).map((e) => e.name!).toList();
   }
 }
 
